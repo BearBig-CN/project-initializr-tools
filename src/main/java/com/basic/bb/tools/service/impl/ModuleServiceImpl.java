@@ -11,7 +11,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * @author BB
@@ -25,37 +25,50 @@ public class ModuleServiceImpl implements ModuleService {
     private static final String RESOURCE_PATH = "/src/main/resources";
 
     @Override
-    public InputStream generated(Module module, String path) {
+    public File generated(Module module, String path) {
         log.info("接收到的结果为:{}", module);
+        // 创建模块自己的根目录
+        File rootPath = null;
         try {
             // 递归创建目录
             if (!CollectionUtils.isEmpty(module.getModules())) {
-                module.getModules().stream().forEach((m) -> generated(m, path + File.separatorChar + m.getParent().getArtifact()));
+                module.getModules().stream().forEach((m) -> generated(m, path + File.separatorChar));
             }
 
-            // 创建模块自己的根目录
-            File rootPath = new File(path + module.getArtifact());
-            // 存在则先删除
-            if (rootPath.exists()) {
-                rootPath.delete();
+            if (module.getIsRoot().equalsIgnoreCase(Boolean.toString(Boolean.FALSE))) {
+                rootPath = new File(path + module.getArtifact());
+            } else {
+                rootPath = new File(path);
             }
-            // 创建目录
-            rootPath.mkdir();
-            File rootPomFile = new File(rootPath.getAbsolutePath() + File.separatorChar + "pom.xml");
-            if (generatedFile(rootPomFile, "pom.ftl", module)) {
+
+            // 不存在，则创建
+            if (!rootPath.exists()) {
+                rootPath.mkdirs();
+            }
+
+            File file = new File(rootPath.getAbsolutePath() + File.separatorChar + "pom.xml");
+            if (generatedFile(file, "pom.ftl", module) && module.getIsRoot().equalsIgnoreCase(Boolean.toString(Boolean.FALSE))) {
                 String packageName = module.getPackageName().replace(".", "" + File.separatorChar);
                 // 创建包目录
-                File packageDir = new File(rootPomFile.getAbsolutePath() + CLASS_PATH + packageName + File.separatorChar + module);
+                File packageDir = new File(rootPath.getAbsolutePath() + CLASS_PATH + packageName);
                 packageDir.mkdirs();
                 // 创建resources目录
-                File resourcesDir = new File(rootPomFile.getAbsolutePath() + RESOURCE_PATH);
+                File resourcesDir = new File(rootPath.getAbsolutePath() + RESOURCE_PATH);
                 resourcesDir.mkdirs();
+                // 创建启动类
+                if (!Objects.isNull(module.getOptional()) && module.getOptional().isCreateBootStart()) {
+                    file = new File(packageDir.getAbsolutePath() + File.separatorChar + "StartApplication.java");
+                    generatedFile(file, "bootStart.ftl", module);
+
+                    file = new File(resourcesDir.getAbsolutePath() + File.separatorChar + "application.properties");
+                    // 创建配置文件
+                    generatedFile(file, "application.ftl", module);
+                }
             }
         } catch (Exception ex) {
             log.error("异常", ex);
         }
-
-        return null;
+        return rootPath;
     }
 
     private boolean generatedFile(File targetFile, String templateName, Object vo) {

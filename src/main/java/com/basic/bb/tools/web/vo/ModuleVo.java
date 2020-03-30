@@ -1,12 +1,12 @@
 package com.basic.bb.tools.web.vo;
 
+import com.basic.bb.tools.domain.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 模块,包含以下属性
@@ -32,6 +32,11 @@ public class ModuleVo {
     private String packageName;
 
     /**
+     * 可选操作
+     */
+    private Optional optional;
+
+    /**
      * 父模块信息，格式：
      */
     private String parentInfo;
@@ -42,7 +47,7 @@ public class ModuleVo {
     private List<ModuleVo> moduleInfos;
 
     /**
-     * 模块依赖列表，key:moduleName,  value: dependencyInfo
+     * 模块依赖列表
      */
-    private Map<ModuleVo, List<String>> moduleDependencyInfos;
+    private List<String> dependencyInfos;
 }

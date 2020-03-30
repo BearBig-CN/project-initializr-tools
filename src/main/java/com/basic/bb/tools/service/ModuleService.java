@@ -2,6 +2,7 @@ package com.basic.bb.tools.service;
 
 import com.basic.bb.tools.domain.Module;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -17,5 +18,5 @@ public interface ModuleService {
      * @param path 路径
      * @return
      */
-    InputStream generated(Module module, String path);
+    File generated(Module module, String path);
 }

@@ -44,17 +44,22 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="parentInfo" class="col-sm-2 control-label">parent</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="parentInfo" name="parentInfo" placeholder="parentInfo">
-                </div>
-            </div>
-            <div class="form-group">
                 <label for="packageName" class="col-sm-2 control-label">package</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="packageName" name="packageName" placeholder="packageName">
                 </div>
             </div>
+            <div class="form-group">
+                <label for="parentInfo" class="col-sm-2 control-label">parent</label>
+                <div class="col-sm-10">
+                    <select class="form-control" id="parentInfo" name="parentInfo" placeholder="parentInfo">
+                        <option>----请选择(可选)----</option>
+                        <option>org.springframework.boot:spring-boot-starter-parent:2.2.6.RELEASE</option>
+                        <option>org.springframework.boot:spring-boot-starter-parent:2.2.5.RELEASE</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label class="col-sm-2 control-label">modules</label>
                 <div class="col-sm-10">
@@ -66,51 +71,73 @@
                             <h3 class="panel-title">dao</h3>
                         </div>
                         <div class="panel-body">
-                            这是一个基本的面板
-                            <input type="hidden" class="form-control" name="moduleInfos[0].group" value="" >
-                            <input type="hidden" class="form-control" name="moduleInfos[0].artifact" value="dao" >
-                            <input type="hidden" class="form-control" name="moduleInfos[0].version" value="" >
+                            <div class="form-group">
+                                <label for="artifact" class="col-sm-2 control-label">artifactId</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="moduleInfos[0].artifact" placeholder="artifactId">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="packageName" class="col-sm-2 control-label">package</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="moduleInfos[0].packageName" placeholder="packageName">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="panel panel-primary">
-                        <input type="hidden" class="form-control" name="moduleNames" value="service">
                         <div class="panel-heading">
                             <h3 class="panel-title">service</h3>
                         </div>
                         <div class="panel-body">
-                            这是一个基本的面板
-                            <input type="hidden" class="form-control" name="moduleInfos[1].group" value="" >
-                            <input type="hidden" class="form-control" name="moduleInfos[1].artifact" value="service" >
-                            <input type="hidden" class="form-control" name="moduleInfos[1].version" value="" >
+                            <div class="form-group">
+                                <label for="artifact" class="col-sm-2 control-label">artifactId</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="moduleInfos[1].artifact" placeholder="artifactId">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="packageName" class="col-sm-2 control-label">package</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="moduleInfos[1].packageName" placeholder="packageName">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="panel panel-primary">
-                        <input type="hidden" class="form-control" name="moduleNames" value="web">
                         <div class="panel-heading">
                             <h3 class="panel-title">web</h3>
+                            <input type="hidden" name="moduleInfos[2].optional.createBootStart" value="true">
                         </div>
                         <div class="panel-body">
-                            这是一个基本的面板
-                            <input type="hidden" class="form-control" name="moduleInfos[2].group" value="" >
-                            <input type="hidden" class="form-control" name="moduleInfos[2].artifact" value="web" >
-                            <input type="hidden" class="form-control" name="moduleInfos[2].version" value="" >
+                            <div class="form-group">
+                                <label for="artifact" class="col-sm-2 control-label">artifactId</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="moduleInfos[2].artifact" placeholder="artifactId">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="packageName" class="col-sm-2 control-label">package</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="moduleInfos[2].packageName" placeholder="packageName">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label for="dependencies" class="col-sm-2 control-label">dependencies</label>
+                <label class="col-sm-2 control-label">dependencies</label>
                 <div class="col-sm-10">
-                    <input type="hidden" class="form-control" id="dependencies" placeholder="dependencies">
                     <div>
                         <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox1" value="option1"> lombok
+                            <input type="checkbox" id="inlineCheckbox1" value="org.projectlombok:lombok:::true" name="dependencyInfos[0]"> Lombok
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox2" value="option2"> log4j
+                            <input type="checkbox" id="inlineCheckbox2" value="org.springframework.boot:spring-boot-starter-web" name="dependencyInfos[1]"> Spring Web
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox3" value="option3"> junit
+                            <input type="checkbox" id="inlineCheckbox3" value="org.springframework.boot:spring-boot-devtools::runtime:true" name="dependencyInfos[2]"> Spring Boot DevTools
                         </label>
                     </div>
                     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addDependencyModal">
@@ -149,6 +176,7 @@
                             <label for="moduleName" class="col-sm-2 control-label">name</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" id="moduleName" placeholder="moduleName">
+                                <input type="text" class="form-control" id="packageName1" placeholder="moduleName">
                             </div>
                         </div>
                     </form>

@@ -20,7 +20,7 @@ import java.util.List;
 @Data
 public class Module {
 
-    private boolean isRoot;
+    private String isRoot;
     private String name;
     private String group;
     private String artifact;
@@ -28,6 +28,11 @@ public class Module {
     private String description;
     private String packageName;
     private String packaging;
+
+    /**
+     * 可选操作
+     */
+    private Optional optional;
 
     /**
      * 父模块
@@ -43,4 +48,18 @@ public class Module {
      * 依赖列表
      */
     private List<Dependency> dependencies;
+
+    @Override
+    public String toString() {
+        return "Module{" +
+                "isRoot=" + isRoot +
+                ", name='" + name + '\'' +
+                ", group='" + group + '\'' +
+                ", artifact='" + artifact + '\'' +
+                ", version='" + version + '\'' +
+                ", description='" + description + '\'' +
+                ", packageName='" + packageName + '\'' +
+                ", packaging='" + packaging + '\'' +
+                '}';
+    }
 }
