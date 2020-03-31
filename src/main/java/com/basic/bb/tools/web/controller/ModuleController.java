@@ -43,8 +43,8 @@ public class ModuleController {
     @PostMapping("/gen")
     public String projectGen(ModuleVo moduleVo, HttpServletResponse response) throws UnsupportedEncodingException {
         Assert.notNull(moduleVo, "moduleVo不能为Null");
-        String path = tempSavePath + File.separatorChar + moduleVo.getArtifact();
-        File rootPath = moduleService.generated(ConvertUtil.convert(moduleVo, null, true), path);
+        // 生成文件
+        File rootPath = moduleService.generated(ConvertUtil.convert(moduleVo, null, tempSavePath));
 
         // 配置文件下载
         response.setHeader("content-type", "application/octet-stream");
@@ -56,7 +56,7 @@ public class ModuleController {
             DownloadUtil.folder2zip(rootPath, response.getOutputStream());
             log.info("Download the song successfully!");
         } catch (Exception e) {
-            log.error("Download the song failed, 错误信息={}", e);
+            log.error("Download the song failed, 错误信息={}", e.getMessage());
         }
         return null;
     }

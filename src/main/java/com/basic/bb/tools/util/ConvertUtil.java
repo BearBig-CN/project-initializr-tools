@@ -17,26 +17,35 @@ import java.util.Objects;
  */
 public class ConvertUtil {
 
-    public static Module convert(ModuleVo moduleVo, Module parent, boolean isRoot) {
-        if (Objects.isNull(moduleVo)) {
+    /**
+     * 转换
+     *
+     * @param vo
+     * @param parent
+     * @param rootPath
+     * @return
+     */
+    public static Module convert(ModuleVo vo, Module parent, String rootPath) {
+        if (Objects.isNull(vo)) {
             throw new NullPointerException("moduleVo is null!");
         }
 
         // 基本属性的复制
         Module module = Module.builder()
-                .name(moduleVo.getArtifact())
-                .group(moduleVo.getGroup())
-                .artifact(moduleVo.getArtifact())
-                .version(moduleVo.getVersion())
-                .description(moduleVo.getDescription())
-                .packageName(moduleVo.getPackageName())
-                .isRoot(String.valueOf(isRoot))
-                .optional(moduleVo.getOptional())
+                .name(vo.getArtifact())
+                .group(vo.getGroup())
+                .artifact(vo.getArtifact())
+                .version(vo.getVersion())
+                .description(vo.getDescription())
+                .packageName(vo.getPackageName())
+                .isRoot(Objects.isNull(parent) ? "true" : "false")
+                .optional(vo.getOptional())
+                .rootPath(concat(rootPath, vo.getArtifact()))
                 .build();
 
         // 这个是为了配置pom.xml里面的parent节点
-        if (!StringUtils.isEmpty(moduleVo.getParentInfo())) {
-            String[] infos = moduleVo.getParentInfo().split(":");
+        if (!StringUtils.isEmpty(vo.getParentInfo())) {
+            String[] infos = vo.getParentInfo().split(":");
             Module parentModule = Module.builder()
                     .group(infos[0])
                     .artifact(infos[1])
@@ -56,21 +65,24 @@ public class ConvertUtil {
         }
 
         // 设置子模块信息
-        if (CollectionUtils.isEmpty(moduleVo.getModuleInfos())) {
+        if (CollectionUtils.isEmpty(vo.getModuleInfos())) {
             module.setPackaging("jar");
         } else {
             module.setPackaging("pom");
             List<Module> childModules = new ArrayList<>(10);
-            moduleVo.getModuleInfos().stream().forEach(moduleInfo -> {
-                childModules.add(convert(moduleInfo, module, false));
+            vo.getModuleInfos().stream().forEach(child -> {
+                childModules.add(convert(child, module, module.getRootPath()));
             });
             module.setModules(childModules);
         }
 
         // 设置maven依赖
-        if (!CollectionUtils.isEmpty(moduleVo.getDependencyInfos())) {
+        if (!CollectionUtils.isEmpty(vo.getDependencyInfos())) {
             List<Dependency> dependencies = new ArrayList<>(10);
-            moduleVo.getDependencyInfos().stream().forEach(d -> {
+            vo.getDependencyInfos().stream().forEach(d -> {
+                if (StringUtils.isEmpty(d)) {
+                    return;
+                }
                 String[] strArrays = d.split(":");
                 Dependency dependency = Dependency.builder()
                         .group(strArrays[0])
@@ -110,5 +122,36 @@ public class ConvertUtil {
         }
 
         return module;
+    }
+
+    /**
+     * 设置module的rootPath
+     *
+     * @param module
+     * @param rootPath
+     */
+    private static void setRootPath(Module module, String rootPath) {
+        if (Objects.isNull(module)) {
+            throw new NullPointerException("module对象不能为null!");
+        }
+        module.setRootPath(concat(rootPath, module.getArtifact()));
+    }
+
+    /**
+     * 合并多个path,  path1+/+path2
+     *
+     * @param path1
+     * @param paths
+     * @return
+     */
+    public static String concat(String path1 ,String... paths) {
+        if (StringUtils.isEmpty(path1) || Objects.isNull(paths)) {
+            throw new NullPointerException("path1或paths为空");
+        }
+        StringBuilder sb = new StringBuilder(path1);
+        for (String path : paths) {
+            sb.append(File.separatorChar).append(path);
+        }
+        return sb.toString();
     }
 }

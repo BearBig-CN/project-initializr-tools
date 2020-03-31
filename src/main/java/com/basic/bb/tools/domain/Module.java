@@ -28,6 +28,10 @@ public class Module {
     private String description;
     private String packageName;
     private String packaging;
+    /**
+     * 根路径
+     */
+    private String rootPath;
 
     /**
      * 可选操作

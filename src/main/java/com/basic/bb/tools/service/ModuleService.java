@@ -3,7 +3,6 @@ package com.basic.bb.tools.service;
 import com.basic.bb.tools.domain.Module;
 
 import java.io.File;
-import java.io.InputStream;
 
 /**
  * @author BB
@@ -15,8 +14,7 @@ public interface ModuleService {
      * 生成项目
      *
      * @param module 模块信息
-     * @param path 路径
      * @return
      */
-    File generated(Module module, String path);
+    File generated(Module module);
 }

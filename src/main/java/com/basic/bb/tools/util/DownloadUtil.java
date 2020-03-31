@@ -1,6 +1,7 @@
 package com.basic.bb.tools.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.FileSystemUtils;
 
 import java.io.*;
 import java.util.zip.ZipEntry;
@@ -44,7 +45,8 @@ public class DownloadUtil {
         } finally {
             // 下载完成后，删除源目录
             if (src.exists()) {
-                src.delete();
+                boolean delResult = FileSystemUtils.deleteRecursively(src);
+                log.info("{}删除结果：{}", src.getAbsolutePath(), delResult);
             }
         }
     }
